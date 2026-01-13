@@ -10,13 +10,13 @@
                 <i data-lucide="chevron-left" class="w-6 h-6 text-stone-600 group-hover:-translate-x-1 transition-transform"></i>
             </a>
             <div>
-                <h1 class="text-3xl font-serif font-bold text-stone-900 tracking-tight">Manajemen Produk</h1>
-                <p class="text-sm text-stone-500">Total {{ $products->count() }} koleksi terdaftar di katalog Anda.</p>
+                <h1 class="text-3xl font-serif font-bold text-stone-900 tracking-tight">Product Management</h1>
+                <p class="text-sm text-stone-500">Total {{ $products->count() }} collection listed in your catalog.</p>
             </div>
         </div>
         <a href="{{ route('admin.products.create') }}" class="bg-maroon text-white px-8 py-4 rounded-2xl font-bold hover:bg-red-900 transition-all shadow-xl shadow-maroon/20 flex items-center justify-center gap-3 group">
             <i data-lucide="plus" class="w-5 h-5 group-hover:rotate-90 transition-transform duration-300"></i>
-            <span>Tambah Produk</span>
+            <span>Add Product</span>
         </a>
     </div>
 
@@ -32,10 +32,10 @@
             <table class="w-full text-left border-collapse">
                 <thead class="bg-stone-50/50 border-b border-stone-100">
                     <tr class="text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400">
-                        <th class="px-8 py-5">Produk</th>
-                        <th class="px-8 py-5">Harga</th>
-                        <th class="px-8 py-5 text-center">Stok (S/M/L/XL)</th>
-                        <th class="px-8 py-5 text-right">Aksi</th>
+                        <th class="px-8 py-5">Product</th>
+                        <th class="px-8 py-5">Price</th>
+                        <th class="px-8 py-5 text-center">Stock (S/M/L/XL)</th>
+                        <th class="px-8 py-5 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-100">

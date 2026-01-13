@@ -9,8 +9,8 @@
             <i data-lucide="chevron-left" class="w-6 h-6 text-stone-600 group-hover:-translate-x-1 transition-transform"></i>
         </a>
         <div>
-            <h1 class="text-3xl font-serif font-bold text-stone-900 tracking-tight">Tambah Koleksi Baru</h1>
-            <p class="text-sm text-stone-500">Lengkapi detail untuk menambahkan produk premium ke katalog.</p>
+            <h1 class="text-3xl font-serif font-bold text-stone-900 tracking-tight">Add New Collection</h1>
+            <p class="text-sm text-stone-500">Complete the details to add a premium product to the catalog.</p>
         </div>
     </div>
 
@@ -18,7 +18,7 @@
         <div class="mb-8 p-5 bg-red-50 border-l-4 border-red-500 rounded-2xl shadow-sm">
             <div class="flex items-center gap-3 mb-2">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-red-600"></i>
-                <p class="text-sm font-bold text-red-700">Mohon periksa kembali inputan Anda:</p>
+                <p class="text-sm font-bold text-red-700">Please check your input again:</p>
             </div>
             <ul class="list-disc list-inside text-xs text-red-600 space-y-1 ml-2">
                 @foreach ($errors->all() as $error)
@@ -36,17 +36,17 @@
                 
                 <div class="space-y-6">
                     <h2 class="text-lg font-serif font-bold text-stone-800 flex items-center gap-2">
-                        <i data-lucide="info" class="w-5 h-5 text-maroon"></i> Informasi Dasar
+                        <i data-lucide="info" class="w-5 h-5 text-maroon"></i> Basic Information
                     </h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Nama Produk</label>
+                            <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Product Name</label>
                             <input type="text" name="name" value="{{ old('name') }}" placeholder="Contoh: Vintage Harrington Jacket" required 
                                    class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800">
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Harga (Rp)</label>
+                            <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Price (IDR)</label>
                             <input type="number" name="price" value="{{ old('price') }}" placeholder="0" required 
                                    class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800">
                         </div>
@@ -54,22 +54,22 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Kondisi Barang</label>
+                            <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Condition</label>
                             <input type="text" name="condition" value="{{ old('condition') }}" placeholder="Contoh: Excellent / 9.5/10" 
                                    class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800">
                         </div>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Deskripsi Detail</label>
-                        <textarea name="description" rows="5" placeholder="Tuliskan spesifikasi bahan, ukuran detail, atau minus jika ada..." 
+                        <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Detail Description</label>
+                        <textarea name="description" rows="5" placeholder="Write specifications, size details, or any flaws..." 
                                   class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800 resize-none">{{ old('description') }}</textarea>
                     </div>
                 </div>
 
                 <div class="pt-6 border-t border-stone-50">
                     <h2 class="text-lg font-serif font-bold text-stone-800 mb-6 flex items-center gap-2">
-                        <i data-lucide="box" class="w-5 h-5 text-maroon"></i> Stok Ukuran
+                        <i data-lucide="box" class="w-5 h-5 text-maroon"></i> Stock Size
                     </h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         @foreach(['S', 'M', 'L', 'XL'] as $sz)
@@ -88,7 +88,7 @@
             
             <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-stone-100">
                 <h2 class="text-[11px] font-bold uppercase tracking-widest text-stone-400 mb-4 ml-1 flex items-center gap-2">
-                    <i data-lucide="image" class="w-4 h-4"></i> Foto Katalog Utama
+                    <i data-lucide="image" class="w-4 h-4"></i> Main Catalog Photo
                 </h2>
                 <div class="relative group aspect-[3/4] w-full">
                     <div id="main-preview-container" class="w-full h-full bg-stone-50 rounded-[2rem] border-2 border-dashed border-stone-200 flex flex-col items-center justify-center overflow-hidden relative transition-all group-hover:bg-stone-100 group-hover:border-maroon/20">
@@ -97,7 +97,7 @@
                             <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-3">
                                 <i data-lucide="image-plus" class="w-6 h-6 text-stone-300"></i>
                             </div>
-                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Pilih Foto</p>
+                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Choose Photo</p>
                         </div>
                         <input type="file" name="image" id="main-image-input" required 
                                class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*">
@@ -107,7 +107,7 @@
 
             <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-stone-100">
                 <h2 class="text-[11px] font-bold uppercase tracking-widest text-stone-400 mb-4 ml-1 flex items-center gap-2">
-                    <i data-lucide="user-check" class="w-4 h-4"></i> Asset Virtual Try-On
+                    <i data-lucide="user-check" class="w-4 h-4"></i> Virtual Try-On Asset
                 </h2>
                 <div class="relative group aspect-square w-full">
                     <div id="tryon-preview-container" class="w-full h-full bg-stone-900/5 rounded-[2rem] border-2 border-dashed border-stone-200 flex flex-col items-center justify-center overflow-hidden relative group-hover:bg-stone-900/10 transition-all">
@@ -116,7 +116,7 @@
                             <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center mx-auto mb-3">
                                 <i data-lucide="shirt" class="w-5 h-5 text-stone-300"></i>
                             </div>
-                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Upload PNG Transparan</p>
+                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Upload Transparent PNG</p>
                         </div>
                         <input type="file" name="tryon_image" id="tryon-image-input" required 
                                class="absolute inset-0 opacity-0 cursor-pointer" accept="image/png">
@@ -126,7 +126,7 @@
 
             <button type="submit" class="w-full bg-maroon text-white py-6 rounded-[2rem] font-bold hover:bg-red-900 transition-all shadow-xl shadow-maroon/20 flex items-center justify-center gap-3 group">
                 <i data-lucide="save" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
-                <span class="uppercase tracking-widest text-xs">Simpan Koleksi</span>
+                <span class="uppercase tracking-widest text-xs">Save Collection</span>
             </button>
         </div>
     </form>

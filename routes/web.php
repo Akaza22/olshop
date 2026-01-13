@@ -4,7 +4,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\VtoController;
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -14,16 +14,16 @@ Route::get('/', function () {
     return redirect()->route('katalog');
 });
 
+
 Route::get('/katalog', [ProductController::class, 'index'])->name('katalog');
 Route::get('/about', function () { return view('about'); })->name('about');
 
 // Produk & AI Virtual Try-On Routes
 Route::prefix('produk')->group(function () {
     Route::get('/{id}', [ProductController::class, 'show'])->name('produk.show');
-    
-    // AI VTO Routes (Ditempatkan di sini agar sesuai konteks produk)
-    Route::post('/vto/generate', [ProductController::class, 'generateAiVto'])->name('vto.generate');
-    Route::get('/vto/status/{id}', [ProductController::class, 'checkVtoStatus'])->name('vto.status');
+    // Pastikan dua baris ini ada:
+    // Route::post('/vto/process', [VtoController::class, 'process'])->name('vto.process');
+    // Route::get('/vto/status', [VtoController::class, 'checkStatus'])->name('vto.status');
 });
 
 /*
