@@ -1,31 +1,35 @@
-👕 ThriftVTO - Manual Overlay Edition
-Aplikasi katalog baju thrift dengan fitur Virtual Try-On Manual. Versi ini menggunakan teknik Image Overlay (tanpa API berbayar), sehingga 100% gratis, ringan, dan bisa dijalankan tanpa koneksi internet (offline/localhost).
+👕 ThriftVTO - Virtual Try-On Project
+Aplikasi katalog baju thrift dengan fitur Manual Virtual Try-On. Project ini dikembangkan menggunakan Laravel 12 dan Fabric.js untuk memungkinkan pengguna mencoba pakaian secara digital melalui metode Image Overlay yang ringan, instan, dan 100% gratis.
 
-📋 Prasyarat Sistem
-PHP >= 8.2
+📋 1. Prasyarat Sistem
+Sebelum memulai, pastikan perangkat Anda sudah terinstall:
 
-Composer (Dependency Manager PHP)
+PHP >= 8.2.12
 
-Node.js & NPM
+Composer (Dependency Manager untuk PHP)
+
+Node.js & NPM (Untuk pengelolaan aset frontend)
 
 MySQL (XAMPP / Laragon / Desktop MySQL)
 
-🚀 Langkah Instalasi
-1. Persiapan Project
-Ekstrak project dari file ZIP, lalu buka terminal (CMD/PowerShell) di dalam folder project:
+🚀 2. Langkah Instalasi & Setup
+A. Persiapan Project
+Ekstrak project dari file ZIP, lalu buka terminal (CMD/VS Code Terminal) di dalam folder project dan jalankan:
 
 Bash
 
 composer install
 npm install
 npm run dev
-2. Konfigurasi Environment (.env)
+Catatan: Biarkan terminal yang menjalankan npm run dev tetap terbuka selama Anda mengakses website agar CSS dan JS (Vite) termuat sempurna.
+
+B. Konfigurasi Database (.env)
 Salin file .env.example menjadi .env:
 
 Bash
 
 cp .env.example .env
-Buka file .env menggunakan teks editor (VS Code/Notepad), lalu sesuaikan bagian database:
+Buka file .env dan sesuaikan pengaturan database (buat database kosong bernama thrift_vto di phpMyAdmin terlebih dahulu):
 
 Code snippet
 
@@ -35,62 +39,72 @@ DB_PORT=3306
 DB_DATABASE=thrift_vto
 DB_USERNAME=root
 DB_PASSWORD=
-Pastikan kamu sudah membuat database kosong bernama thrift_vto di phpMyAdmin/MySQL.
-
-3. Setup Database & Key
-Jalankan perintah berikut secara berurutan:
+C. Migrasi & Seed Data
+Jalankan perintah ini untuk membuat struktur tabel dan mengisi katalog dengan produk contoh:
 
 Bash
 
 php artisan key:generate
 php artisan migrate --seed
-Catatan: Perintah --seed akan otomatis mengisi katalog dengan produk-produk contoh.
-
-4. Menghubungkan Folder Gambar (WAJIB)
-Fitur Try-On memerlukan akses publik ke folder penyimpanan. Jalankan perintah ini agar gambar muncul di browser:
+D. Menghubungkan Folder Gambar (WAJIB)
+Agar gambar produk dan foto yang diunggah muncul di browser, jalankan perintah ini:
 
 Bash
 
 php artisan storage:link
-💻 Cara Menjalankan Aplikasi
-Nyalakan Server:
+💻 3. Cara Menjalankan & Menggunakan
+Menjalankan Server
+Nyalakan server lokal dengan perintah:
 
 Bash
 
 php artisan serve
-Akses Browser: Buka alamat http://127.0.0.1:8000.
+Akses aplikasi di browser melalui alamat: http://127.0.0.1:8000
 
-Gunakan Fitur Try-On:
+Cara Menggunakan Fitur Try-On (Manual)
+Pilih salah satu produk di halaman Katalog.
 
-Pilih salah satu produk dari katalog.
+Scroll ke bawah ke bagian AI Dressing Room (Mode Manual Overlay).
 
-Scroll ke bawah ke bagian AI Dressing Room (Versi Manual).
+Klik Pilih Foto untuk mengunggah foto diri Anda.
 
-Unggah foto diri kamu.
+Baju produk akan muncul otomatis di atas foto.
 
-Baju akan muncul di atas foto. Kamu bisa menggeser, memutar, dan mengubah ukuran baju agar pas dengan badan kamu di foto.
+Gunakan mouse untuk menggeser (drag), memutar (rotate), dan mengubah ukuran (resize) baju agar pas dengan tubuh pada foto.
 
-🔐 Akses Admin
-Kamu bisa mengelola produk melalui dashboard admin:
+🔐 4. Akses Dashboard Admin
+Anda dapat mengelola produk, stok, dan pesanan melalui dashboard admin:
 
-URL: http://127.0.0.1:8000/login
+URL Login: http://127.0.0.1:8000/login
 
-Email: admin@thriftvto.com (atau cek file DatabaseSeeder.php)
+Email Admin: admin@thriftvto.com
 
 Password: password
 
-🛠 Teknologi yang Digunakan
-Laravel 12: Framework PHP Utama.
+Penting: Jika terjadi error pada menu Orders, pastikan memanggil route admin.orders.index sesuai konfigurasi terbaru.
 
-Tailwind CSS: Desain UI yang responsif.
+📤 5. Cara Mengunggah ke GitHub
+Jika Anda ingin menyimpan atau membagikan project ini melalui GitHub:
 
-Fabric.js: Library JavaScript untuk fitur manipulasi gambar (Drag, Drop, Resize) pada canvas.
+Inisialisasi Git:
 
-Lucide React: Untuk ikon-ikon di website.
+Bash
 
-⚠️ Troubleshooting
-Gambar Tidak Muncul: Pastikan kamu sudah menjalankan php artisan storage:link.
+git init
+git add .
+git commit -m "Initial commit ThriftVTO Manual Edition"
+Push ke Repositori:
 
-Error Mix/Vite: Pastikan terminal yang menjalankan npm run dev tetap terbuka saat kamu mengakses website.
+Bash
 
-Database Error: Pastikan MySQL di XAMPP/Laragon sudah dalam status Start.
+git remote add origin https://github.com/username-anda/nama-repo.git
+git branch -M main
+git push -u origin main
+File .env, folder vendor, dan node_modules secara otomatis diabaikan oleh Git demi keamanan.
+
+⚠️ 6. Troubleshooting
+Gambar Tidak Muncul: Jalankan kembali perintah php artisan storage:link.
+
+404 Not Found: Pastikan Anda mengakses via php artisan serve, bukan membuka file .blade.php secara langsung di browser.
+
+Database Error: Pastikan MySQL di XAMPP sudah aktif dan nama database di .env sudah benar.
