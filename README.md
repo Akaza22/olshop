@@ -19,47 +19,39 @@ Sebelum memulai, pastikan perangkat Anda sudah terinstall:
 ### A. Persiapan Project
 Ekstrak project dari file ZIP, lalu buka terminal (CMD/VS Code Terminal) di dalam folder project dan jalankan:
 
-```bash
+
 composer install
 npm install
 npm run dev
 💡 Catatan: Biarkan terminal yang menjalankan npm run dev tetap terbuka selama Anda mengakses website agar CSS dan JS (Vite) termuat sempurna.
 
-B. Konfigurasi Database (.env)
+### B. Konfigurasi Database (.env)
 Salin file .env.example menjadi .env:
-
-bash
-Copy code
-cp .env.example .env
 Buka file .env dan sesuaikan pengaturan database (buat database kosong bernama thrift_vto di phpMyAdmin terlebih dahulu):
 
-env
-Copy code
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=thrift_vto
 DB_USERNAME=root
 DB_PASSWORD=
-C. Migrasi & Seed Data
+
+### C. Migrasi & Seed Data
 Jalankan perintah ini untuk membuat struktur tabel dan mengisi katalog dengan produk contoh:
 
-bash
-Copy code
 php artisan key:generate
 php artisan migrate --seed
-D. Menghubungkan Folder Gambar (WAJIB)
+
+### D. Menghubungkan Folder Gambar (WAJIB)
 Agar gambar produk dan foto yang diunggah muncul di browser, jalankan perintah ini:
 
-bash
-Copy code
 php artisan storage:link
-💻 3. Cara Menjalankan & Menggunakan
+
+
+## 💻 3. Cara Menjalankan & Menggunakan
 Menjalankan Server
 Nyalakan server lokal dengan perintah:
 
-bash
-Copy code
 php artisan serve
 Akses aplikasi di browser melalui alamat: http://127.0.0.1:8000
 
@@ -80,7 +72,7 @@ Memutar (rotate)
 
 Mengubah ukuran (resize) baju agar pas dengan tubuh pada foto
 
-🔐 4. Akses Dashboard Admin
+## 🔐 4. Akses Dashboard Admin
 Anda dapat mengelola produk, stok, dan pesanan melalui dashboard admin:
 
 URL Login: http://127.0.0.1:8000/login
@@ -91,7 +83,7 @@ Password: password
 
 ⚠️ Penting: Jika terjadi error pada menu Orders, pastikan memanggil route admin.orders.index sesuai konfigurasi terbaru.
 
-📤 5. Cara Mengunggah ke GitHub
+## 📤 5. Cara Mengunggah ke GitHub
 Jika Anda ingin menyimpan atau membagikan project ini melalui GitHub:
 
 Inisialisasi Git
@@ -108,7 +100,7 @@ git branch -M main
 git push -u origin main
 ⚠️ File .env, folder vendor, dan node_modules secara otomatis diabaikan oleh Git demi keamanan.
 
-⚠️ 6. Troubleshooting
+## ⚠️ 6. Troubleshooting
 Gambar Tidak Muncul: Jalankan kembali perintah php artisan storage:link.
 
 404 Not Found: Pastikan Anda mengakses via php artisan serve, bukan membuka file .blade.php secara langsung di browser.
