@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // 2. Seed Users
-        $admin = User::create([
+        User::create([
             'name' => 'superadmin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
@@ -40,49 +40,54 @@ class DatabaseSeeder extends Seeder
             'role' => 'customer',
         ]);
 
-        // 3. Seed Products (Disesuaikan dengan kolom category baru)
+        // 3. Seed Products (Hanya 4 Produk sesuai ketersediaan file kamu)
         $productData = [
             [
-                'name' => 'Flannel Shirt', 
-                'category' => 'Tops', 
-                'price' => 150000, 
-                'img' => 'kemeja', 
-                'desc' => 'Vintage flannel shirt made of lightweight wool.'
+                'name' => 'Coquette Pinkish',
+                'category' => 'Tops',
+                'price' => 85000,
+                'img' => 'TOP 1.jpg',
+                'tryon' => 'TOP 1.png', 
+                'desc' => 'Beautiful pinkish coquette style top with delicate lace details.'
             ],
             [
-                'name' => 'Premium Batik', 
-                'category' => 'Tops', 
-                'price' => 250000, 
-                'img' => 'batik', 
-                'desc' => 'Authentic hand-drawn batik with classic motifs.'
+                'name' => 'City of London Tank',
+                'category' => 'Tops',
+                'price' => 95000,
+                'img' => 'TOP 2.png',
+                'tryon' => 'TOP 2.png', // Karena hanya ada png
+                'desc' => 'Graphic tank top featuring City of London print, edgy and stylish.'
             ],
             [
-                'name' => 'Gorpcore Jacket', 
-                'category' => 'Outerwear', 
-                'price' => 450000, 
-                'img' => 'gorpcore', 
-                'desc' => 'Gorpcore-style outdoor jacket, windproof and waterproof.'
+                'name' => 'Ribbon Soft Pink',
+                'category' => 'Tops',
+                'price' => 85000,
+                'img' => 'TOP 3.jpg',
+                'tryon' => 'TOP 3.png', // Ada file transparan png
+                'desc' => 'Soft pink tank top with ribbon accents, perfect for daily wear.'
             ],
             [
-                'name' => 'Striped Shirt', 
-                'category' => 'Vintage', 
-                'price' => 120000, 
-                'img' => 'baju', 
-                'desc' => 'Retro striped t-shirt made of 30s combed cotton.'
+                'name' => 'Aqua Blue Lace',
+                'category' => 'Tops',
+                'price' => 85000,
+                'img' => 'TOP 4.jpg',
+                'tryon' => 'TOP 4.png', // Ada file transparan png
+                'desc' => 'Vibrant aqua blue top with white lace trim and coquette aesthetic.'
             ],
         ];
 
         foreach ($productData as $data) {
             $product = Product::create([
                 'name' => $data['name'],
-                'category' => $data['category'], // FIELD BARU DISINI
+                'category' => $data['category'],
                 'description' => $data['desc'],
                 'price' => $data['price'],
                 'condition' => 'Excellent',
-                'image' => $data['img'] . '.jpg',
-                'tryon_image' => $data['img'] . '.png',
+                'image' => $data['img'],
+                'tryon_image' => $data['tryon'],
             ]);
 
+            // Seed Stok Ukuran
             foreach (['S', 'M', 'L', 'XL'] as $size) {
                 ProductSize::create([
                     'product_id' => $product->id,
@@ -92,24 +97,21 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // 4. Seed Orders (Tetap sama)
+        // 4. Seed Orders (Simulasi transaksi untuk Dashboard)
         $transactions = [
-            ['month' => -3, 'status' => 'Sent', 'total' => 300000],
-            ['month' => -2, 'status' => 'Sent', 'total' => 450000],
-            ['month' => -1, 'status' => 'Sent', 'total' => 750000],
-            ['month' => 0,  'status' => 'Sent', 'total' => 500000],
-            ['month' => 0,  'status' => 'Pending',  'total' => 200000],
-            ['month' => 0,  'status' => 'Sent', 'total' => 350000],
+            ['month' => -1, 'status' => 'Sent', 'total' => 170000],
+            ['month' => 0,  'status' => 'Sent', 'total' => 85000],
+            ['month' => 0,  'status' => 'Pending', 'total' => 95000],
         ];
 
         foreach ($transactions as $index => $t) {
-            $date = Carbon::now()->addMonths($t['month'])->subDays(rand(1, 20));
+            $date = Carbon::now()->addMonths($t['month'])->subDays(rand(1, 15));
             
             $order = Order::create([
                 'user_id' => $customer->id,
                 'name' => $customer->name,
                 'contact' => '08123456789',
-                'address' => 'Jl. Thrift No. ' . ($index + 1),
+                'address' => 'Jl. Coquette No. ' . ($index + 1),
                 'total_price' => $t['total'],
                 'status' => $t['status'],
                 'created_at' => $date,
@@ -119,7 +121,7 @@ class DatabaseSeeder extends Seeder
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => rand(1, 4),
-                'size' => 'L',
+                'size' => 'M',
                 'price' => $t['total']
             ]);
         }

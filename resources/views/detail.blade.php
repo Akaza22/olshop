@@ -56,12 +56,12 @@
                                    {{ $s->stock <= 0 ? 'disabled' : '' }} required>
                             
                             <div class="w-20 h-20 flex flex-col items-center justify-center border-2 rounded-xl transition-all duration-300
-                                @if($s->stock > 0)
+                                 @if($s->stock > 0)
                                     bg-white border-stone-200 text-stone-700 hover:border-maroon/50
                                     peer-checked:bg-maroon peer-checked:border-maroon peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-maroon/30
-                                @else
+                                 @else
                                     bg-stone-50 border-stone-100 text-stone-300 cursor-not-allowed
-                                @endif">
+                                 @endif">
                                 <span class="text-lg font-bold">{{ $s->size }}</span>
                                 <span class="text-[10px] {{ $s->stock > 0 ? 'text-stone-400 peer-checked:text-white/80' : 'text-stone-300' }}">
                                     Stock: {{ $s->stock }}
@@ -98,6 +98,7 @@
     </div>
 </div>
 
+{{-- VIRTUAL TRY-ON SECTION --}}
 <div class="mt-20 px-4 mb-20">
     <div class="bg-stone-900 rounded-[3rem] p-8 md:p-12 overflow-hidden shadow-2xl relative">
         <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -153,7 +154,8 @@
             </div>
 
             <div class="lg:col-span-8 flex justify-center">
-                <div class="bg-white p-2 rounded-[2.5rem] shadow-2xl overflow-hidden border-[10px] border-stone-800">
+                {{-- PERBAIKAN: p-0 dan bg-stone-800 untuk menghilangkan bingkai putih --}}
+                <div class="bg-stone-800 p-0 rounded-[2.5rem] shadow-2xl overflow-hidden border-[10px] border-stone-800">
                     <canvas id="fittingCanvas" width="450" height="600" class="max-w-full h-auto"></canvas>
                 </div>
             </div>
@@ -193,17 +195,20 @@
             }
         });
 
-        // --- 2. PROFESSIONAL OVERLAY LOGIC (FABRIC.JS) ---
+        // --- 2. FABRIC.JS LOGIC ---
         const canvas = new fabric.Canvas('fittingCanvas', {
-            preserveObjectStacking: true
+            preserveObjectStacking: true,
+            backgroundColor: '#1c1917' // Mencocokkan dengan warna bg-stone-900
         });
 
         let garmentObj = null;
 
-        // Set Default Background (A mannequin or model)
+        // PERBAIKAN: Fungsi background dengan logika "Cover" agar Full Screen
         function setCanvasBackground(url) {
             fabric.Image.fromURL(url, function(img) {
+                // Hitung skala terbesar untuk menutupi seluruh area (Cover)
                 const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+                
                 canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
                     scaleX: scale,
                     scaleY: scale,
@@ -215,6 +220,7 @@
             });
         }
 
+        // Set Default Model
         setCanvasBackground('/images/models/model.jpg');
 
         // Handle User Photo Upload
@@ -233,7 +239,7 @@
         fabric.Image.fromURL('/images/products/{{ $product->tryon_image }}', function(img) {
             img.set({
                 left: canvas.width / 2,
-                top: canvas.height / 2,
+                top: canvas.height / 3, // Sedikit ke atas agar pas di badan model
                 originX: 'center',
                 originY: 'center',
                 scaleX: 0.5,
@@ -292,6 +298,12 @@
 </script>
 
 <style>
+    /* Styling agar canvas responsif di HP */
+    .canvas-container {
+        max-width: 100% !important;
+        margin: 0 auto;
+    }
+
     /* Premium Range Slider */
     input[type=range] { -webkit-appearance: none; background: rgba(255,255,255,0.1); height: 4px; border-radius: 2px; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #800000; cursor: pointer; border: 2px solid white; }

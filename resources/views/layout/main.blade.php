@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrift VTO | Virtual Try-On Experience</title>
+    <title>LockerByBrokeAngel</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -23,13 +23,14 @@
     <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             
-            <!-- <a href="/" class="text-3xl font-serif font-bold text-maroon tracking-tight">
-                Thrift<span class="text-brown">VTO</span>
-            </a> -->
-            <a href="/" class="flex items-center">
+            <a href="/" class="flex items-center gap-3 group">
                 <img src="{{ asset('images/logo.png') }}" 
-                    alt="ThriftVTO Logo" 
-                    class="h-10 w-auto object-contain">
+                    alt="Logo" 
+                    class="h-10 w-auto object-contain transition-transform group-hover:scale-105">
+
+                <span class="text-2xl font-serif font-bold tracking-tight">
+                    <span class="text-maroon">LockerBy</span><span class="text-brown italic">BrokeAngel</span>
+                </span>
             </a>
 
             <div class="hidden md:flex items-center space-x-8 font-medium">
@@ -114,7 +115,7 @@
     <footer class="bg-stone-900 text-stone-300 pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-12">
             <div class="col-span-1 md:col-span-1">
-                <h3 class="text-2xl font-serif font-bold text-white mb-4">ThriftVTO</h3>
+                <h3 class="text-2xl font-serif font-bold text-white mb-4">LockerByBrokeAngel</h3>
                 <p class="text-sm leading-relaxed">
                     Taking the vintage shopping experience to the next level with Virtual Try-On technology.
                 </p>
@@ -147,7 +148,7 @@
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-6 pt-8 text-center text-xs text-stone-500">
-            <p>&copy; 2026 ThriftVTO Project. All rights reserved.</p>
+            <p>&copy; 2026 LockerByBrokeAngel Project. All rights reserved.</p>
         </div>
     </footer>
 
