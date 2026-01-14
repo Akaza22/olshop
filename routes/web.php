@@ -26,6 +26,9 @@ Route::prefix('produk')->group(function () {
     // Route::get('/vto/status', [VtoController::class, 'checkStatus'])->name('vto.status');
 });
 
+// Pencarian Produk
+Route::get('/search', [ProductController::class, 'search'])->name('product.search');
+
 /*
 |--------------------------------------------------------------------------
 | Cart Routes (Public/Session Based)

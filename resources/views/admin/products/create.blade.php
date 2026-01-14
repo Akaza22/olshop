@@ -3,6 +3,7 @@
 @section('content')
 <div class="max-w-6xl mx-auto py-12 px-4">
     
+    {{-- Header & Navigation --}}
     <div class="flex items-center gap-5 mb-10">
         <a href="{{ route('admin.products.index') }}" 
            class="group flex items-center justify-center w-12 h-12 bg-white border border-stone-200 rounded-2xl shadow-sm hover:bg-stone-50 transition-all duration-300">
@@ -14,6 +15,7 @@
         </div>
     </div>
 
+    {{-- Error Handling --}}
     @if ($errors->any())
         <div class="mb-8 p-5 bg-red-50 border-l-4 border-red-500 rounded-2xl shadow-sm">
             <div class="flex items-center gap-3 mb-2">
@@ -28,12 +30,14 @@
         </div>
     @endif
 
+    {{-- Form Start --}}
     <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         @csrf
         
         <div class="lg:col-span-2 space-y-6">
             <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-stone-100 space-y-8">
                 
+                {{-- Basic Information --}}
                 <div class="space-y-6">
                     <h2 class="text-lg font-serif font-bold text-stone-800 flex items-center gap-2">
                         <i data-lucide="info" class="w-5 h-5 text-maroon"></i> Basic Information
@@ -58,6 +62,23 @@
                             <input type="text" name="condition" value="{{ old('condition') }}" placeholder="Contoh: Excellent / 9.5/10" 
                                    class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800">
                         </div>
+
+                        {{-- SEKSI KATEGORI BARU --}}
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Category</label>
+                            <div class="relative">
+                                <select name="category" required 
+                                        class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800 appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Choose Category</option>
+                                    @foreach(['Outerwear', 'Tops', 'Bottoms', 'Vintage'] as $category)
+                                        <option value="{{ $category }}" {{ old('category') == $category ? 'selected' : '' }}>
+                                            {{ $category }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-stone-400 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="space-y-2">
@@ -67,6 +88,7 @@
                     </div>
                 </div>
 
+                {{-- Stock Size --}}
                 <div class="pt-6 border-t border-stone-50">
                     <h2 class="text-lg font-serif font-bold text-stone-800 mb-6 flex items-center gap-2">
                         <i data-lucide="box" class="w-5 h-5 text-maroon"></i> Stock Size
@@ -84,8 +106,10 @@
             </div>
         </div>
 
+        {{-- Sidebar Photo Upload --}}
         <div class="space-y-6">
             
+            {{-- Main Catalog Photo --}}
             <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-stone-100">
                 <h2 class="text-[11px] font-bold uppercase tracking-widest text-stone-400 mb-4 ml-1 flex items-center gap-2">
                     <i data-lucide="image" class="w-4 h-4"></i> Main Catalog Photo
@@ -105,6 +129,7 @@
                 </div>
             </div>
 
+            {{-- Try-On Asset --}}
             <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-stone-100">
                 <h2 class="text-[11px] font-bold uppercase tracking-widest text-stone-400 mb-4 ml-1 flex items-center gap-2">
                     <i data-lucide="user-check" class="w-4 h-4"></i> Virtual Try-On Asset
@@ -124,6 +149,7 @@
                 </div>
             </div>
 
+            {{-- Submit Button --}}
             <button type="submit" class="w-full bg-maroon text-white py-6 rounded-[2rem] font-bold hover:bg-red-900 transition-all shadow-xl shadow-maroon/20 flex items-center justify-center gap-3 group">
                 <i data-lucide="save" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                 <span class="uppercase tracking-widest text-xs">Save Collection</span>
@@ -132,9 +158,9 @@
     </form>
 </div>
 
+{{-- Preview Scripts --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Fungsi untuk menangani Preview
         function setupPreview(inputId, previewId, placeholderId) {
             const input = document.getElementById(inputId);
             const preview = document.getElementById(previewId);
@@ -154,11 +180,9 @@
             });
         }
 
-        // Jalankan Preview
         setupPreview('main-image-input', 'main-preview', 'main-placeholder');
         setupPreview('tryon-image-input', 'tryon-preview', 'tryon-placeholder');
         
-        // Inisialisasi Ulang Lucide Icons
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }

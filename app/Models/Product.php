@@ -11,8 +11,15 @@ class Product extends Model
     use HasFactory;
     use SoftDeletes;
 
-    // Pastikan kolom condition sudah masuk fillable
-    protected $fillable = ['name', 'description', 'price', 'condition', 'image', 'tryon_image'];
+    protected $fillable = [
+    'name',
+    'category', 
+    'price',
+    'condition',
+    'description',
+    'image',
+    'tryon_image',
+];
 
     // Relasi: Satu produk memiliki banyak ukuran
     public function sizes()

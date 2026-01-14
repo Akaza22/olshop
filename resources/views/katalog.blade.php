@@ -10,84 +10,151 @@
     
     <div class="relative grid grid-cols-1 md:grid-cols-2 items-center">
         <div class="p-10 md:p-16 text-white">
-            <span class="inline-block px-4 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold tracking-widest uppercase mb-4">
-                New Experience
-            </span>
-            <h1 class="text-5xl md:text-6xl font-serif font-bold leading-tight mb-4">
-                Try Before <br> You <span class="text-stone-300 italic">Thrift.</span>
-            </h1>
-            <p class="text-stone-200 text-lg mb-8 max-w-md font-light leading-relaxed">
-                Revolutionizing vintage shopping. Experience trying on clothes virtually right from your device.
-            </p>
+            <span class="inline-block px-4 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold tracking-widest uppercase mb-4">New Experience</span>
+            <h1 class="text-5xl md:text-6xl font-serif font-bold leading-tight mb-4">Try Before <br> You <span class="text-stone-300 italic">Thrift.</span></h1>
+            <p class="text-stone-200 text-lg mb-8 max-w-md font-light leading-relaxed">Revolutionizing vintage shopping with Virtual Try-On technology.</p>
             <div class="flex gap-4">
-                <a href="#koleksi" class="bg-white text-maroon px-8 py-3 rounded-full font-bold hover:bg-stone-100 transition shadow-lg">
-                    Expore Collection
-                </a>
+                <a href="#koleksi" class="bg-white text-maroon px-8 py-3 rounded-full font-bold hover:bg-stone-100 transition shadow-lg">Explore Collection</a>
             </div>
         </div>
         <div class="hidden md:block h-full">
-            <img src="{{ asset('images/hero.jpg') }}" 
-     class="w-full h-full object-cover opacity-80" alt="Hero Image">
+            <img src="{{ asset('images/hero.jpg') }}" class="w-full h-full object-cover opacity-80" alt="Hero Image">
         </div>
     </div>
 </div>
 
-{{-- SECTION TITLE & FILTER --}}
-<div id="koleksi" class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-    <div>
-        <h2 class="text-3xl font-serif font-bold text-stone-900">Selected Collection</h2>
-        <p class="text-stone-500">Showing {{ $products->count() }} best products for you</p>
-    </div>
-    <div class="flex gap-2">
-        <button class="px-4 py-2 bg-white border border-stone-200 rounded-lg text-sm font-medium hover:border-maroon transition flex items-center gap-2">
-            <i data-lucide="filter" class="w-4 h-4"></i> Filter
-        </button>
-        <button class="px-4 py-2 bg-white border border-stone-200 rounded-lg text-sm font-medium hover:border-maroon transition flex items-center gap-2">
-            Newest <i data-lucide="chevron-down" class="w-4 h-4"></i>
-        </button>
-    </div>
-</div>
-
-{{-- PRODUCT GRID --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-    @foreach($products as $p)
-    <div class="group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-stone-100 flex flex-col">
-        
-        {{-- Image Container --}}
-        <div class="relative overflow-hidden aspect-[3/4]">
-            <img src="/images/products/{{ $p->image }}" 
-                 class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-            
-            {{-- Hover Overlay --}}
-            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <a href="/produk/{{ $p->id }}" class="bg-white text-maroon p-3 rounded-full shadow-xl translate-y-10 group-hover:translate-y-0 transition-transform duration-500">
-                    <i data-lucide="eye" class="w-6 h-6"></i>
-                </a>
+{{-- MAIN LAYOUT: SIDEBAR + CONTENT --}}
+<div id="koleksi" class="flex flex-col lg:flex-row gap-10 pt-10">
+    
+    {{-- SIDEBAR FILTER --}}
+    <aside class="w-full lg:w-1/4 space-y-8">
+        <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm sticky top-28">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4 text-maroon"></i> Filters
+                </h3>
+                <button id="clear-filters" class="text-[10px] font-bold text-stone-400 hover:text-maroon transition uppercase">Reset</button>
             </div>
 
-            {{-- Badge --}}
-            <span class="absolute top-4 left-4 bg-maroon text-white text-[10px] font-bold px-3 py-1 rounded-full tracking-widest uppercase">
-                Vintage
-            </span>
+            {{-- Filter Kategori --}}
+            <div class="mb-8">
+                <p class="text-[10px] font-black uppercase tracking-widest text-maroon mb-4">Category</p>
+                <div class="space-y-3">
+                    @foreach(['Outerwear', 'Tops', 'Bottoms', 'Vintage'] as $cat)
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <input type="checkbox" name="category" value="{{ $cat }}" class="filter-input w-4 h-4 rounded border-stone-300 text-maroon focus:ring-maroon accent-maroon">
+                        <span class="text-sm text-stone-600 group-hover:text-maroon transition">{{ $cat }}</span>
+                    </label>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Filter Harga --}}
+            <div class="mb-2">
+                <p class="text-[10px] font-black uppercase tracking-widest text-maroon mb-4">Price Range</p>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" name="min_price" placeholder="Min" class="filter-input w-full bg-stone-50 border-stone-200 rounded-lg text-xs p-2 focus:ring-1 focus:ring-maroon outline-none">
+                        <input type="number" name="max_price" placeholder="Max" class="filter-input w-full bg-stone-50 border-stone-200 rounded-lg text-xs p-2 focus:ring-1 focus:ring-maroon outline-none">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    {{-- CONTENT AREA --}}
+    <div class="w-full lg:w-3/4">
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-3xl font-serif font-bold text-stone-900" id="search-title">Selected Collection</h2>
+                <p class="text-stone-500 text-sm" id="search-count">Showing {{ $products->count() }} best products for you</p>
+            </div>
         </div>
 
-        {{-- Product Info --}}
-        <div class="p-5 flex-grow flex flex-col">
-            <h3 class="font-serif text-xl font-bold text-stone-800 mb-1 group-hover:text-maroon transition">
-                {{ $p->name }}
-            </h3>
-            <p class="text-brown font-semibold text-lg mb-4">
-                Rp {{ number_format($p->price, 0, ',', '.') }}
-            </p>
-
-            <a href="/produk/{{ $p->id }}" 
-               class="mt-auto w-full flex items-center justify-center gap-2 bg-stone-100 text-stone-800 py-3 rounded-xl font-bold group-hover:bg-maroon group-hover:text-white transition-colors duration-300">
-                <i data-lucide="camera" class="w-4 h-4"></i>
-                Try Now
-            </a>
+        {{-- PRODUCT GRID CONTAINER --}}
+        <div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px] transition-opacity duration-300">
+            @include('partials.product-grid')
         </div>
     </div>
-    @endforeach
 </div>
+
+{{-- SCRIPT: LIVE SEARCH & FILTER --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="query"]');
+        const filterInputs = document.querySelectorAll('.filter-input');
+        const container = document.getElementById('product-container');
+        const title = document.getElementById('search-title');
+        const countText = document.getElementById('search-count');
+        const clearBtn = document.getElementById('clear-filters');
+        
+        let timeout = null;
+
+        function updateProducts() {
+            clearTimeout(timeout);
+            
+            // Debounce agar tidak terlalu sering menembak server
+            timeout = setTimeout(() => {
+                container.style.opacity = '0.5';
+
+                // Ambil semua parameter filter
+                let params = new URLSearchParams();
+                
+                if (searchInput.value) params.append('query', searchInput.value);
+                
+                document.querySelectorAll('input[name="category"]:checked').forEach(el => {
+                    params.append('category', el.value);
+                });
+
+                const minPrice = document.querySelector('input[name="min_price"]').value;
+                const maxPrice = document.querySelector('input[name="max_price"]').value;
+                if (minPrice) params.append('min_price', minPrice);
+                if (maxPrice) params.append('max_price', maxPrice);
+
+                // Update URL tanpa reload agar profesional
+                const newUrl = `${window.location.pathname}?${params.toString()}`;
+                window.history.replaceState({}, '', newUrl);
+
+                // Fetch data produk
+                fetch(`{{ route('product.search') }}?${params.toString()}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    container.innerHTML = data.html;
+                    container.style.opacity = '1';
+                    countText.innerText = `Found ${data.count} items matching your criteria`;
+                    
+                    if (params.get('query')) {
+                        title.innerText = `Results for "${params.get('query')}"`;
+                    } else {
+                        title.innerText = "Selected Collection";
+                    }
+
+                    lucide.createIcons(); // Refresh icons Lucide
+                });
+            }, 400);
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', () => {
+            updateProducts();
+            document.getElementById('koleksi').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        filterInputs.forEach(input => {
+            input.addEventListener('input', updateProducts);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            filterInputs.forEach(input => {
+                if (input.type === 'checkbox') input.checked = false;
+                else input.value = '';
+            });
+            updateProducts();
+        });
+    });
+</script>
 
 @endsection

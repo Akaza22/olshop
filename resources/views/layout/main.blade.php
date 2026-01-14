@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thrift VTO | Virtual Try-On Experience</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -22,8 +23,13 @@
     <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             
-            <a href="/" class="text-3xl font-serif font-bold text-maroon tracking-tight">
+            <!-- <a href="/" class="text-3xl font-serif font-bold text-maroon tracking-tight">
                 Thrift<span class="text-brown">VTO</span>
+            </a> -->
+            <a href="/" class="flex items-center">
+                <img src="{{ asset('images/logo.png') }}" 
+                    alt="ThriftVTO Logo" 
+                    class="h-10 w-auto object-contain">
             </a>
 
             <div class="hidden md:flex items-center space-x-8 font-medium">
@@ -52,9 +58,17 @@
             </div>
 
             <div class="flex items-center space-x-5">
-                <button class="text-gray-600 hover:text-maroon transition">
-                    <i data-lucide="search" class="w-6 h-6"></i>
-                </button>
+                <form action="{{ route('product.search') }}" method="GET" class="relative flex items-center">
+                    <input type="text" 
+                        name="query" 
+                        placeholder="Search..." 
+                        value="{{ request('query') }}"
+                        class="bg-stone-100 border-none rounded-full py-2 pl-4 pr-10 text-sm focus:ring-2 focus:ring-maroon transition-all w-40 md:w-60">
+                    
+                    <button type="submit" class="absolute right-3 text-gray-600 hover:text-maroon transition">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </button>
+                </form>
                 
                 <a href="/cart" class="relative text-gray-600 hover:text-maroon transition">
                     <i data-lucide="shopping-bag" class="w-6 h-6"></i>
