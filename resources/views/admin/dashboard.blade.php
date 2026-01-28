@@ -2,22 +2,57 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto py-10 px-4">
-    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    
+    {{-- 1. HEADER & ADVANCED FILTER --}}
+    <div class="mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
             <h1 class="text-4xl font-serif font-bold text-stone-900 tracking-tight">Admin Dashboard</h1>
-            <p class="text-stone-500">Summary of your VTO Thrift boutique performance.</p>
+            <p class="text-stone-500">
+                Monitoring store performance for 
+                <span class="text-stone-800 font-bold">
+                    {{ $viewMode == 'monthly' ? $listMonths[$selectedMonth] : '' }} {{ $selectedYear }}
+                </span>
+            </p>
         </div>
-        <form action="{{ route('admin.dashboard') }}" method="GET" id="yearFilterForm" class="flex flex-col gap-2">
-            <label class="text-[10px] font-bold uppercase tracking-widest text-stone-400">Select Analytical Year</label>
-            <select name="year" onchange="document.getElementById('yearFilterForm').submit()" 
-                    class="bg-white border border-stone-200 text-stone-700 text-xs font-bold py-3 px-5 rounded-2xl outline-none focus:ring-4 focus:ring-maroon/5 shadow-sm">
-                @foreach($availableYears as $y)
-                    <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>Year {{ $y }}</option>
-                @endforeach
-            </select>
+
+        <form action="{{ route('admin.dashboard') }}" method="GET" id="filterForm" class="flex flex-wrap items-end gap-4">
+            {{-- Filter Mode View --}}
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-stone-400">View Mode</label>
+                <select name="view_mode" onchange="this.form.submit()" 
+                        class="bg-white border border-stone-200 text-stone-700 text-xs font-bold py-3 px-5 rounded-2xl outline-none focus:ring-4 focus:ring-maroon/5 shadow-sm cursor-pointer">
+                    <option value="monthly" {{ $viewMode == 'monthly' ? 'selected' : '' }}>Monthly View (Daily)</option>
+                    <option value="yearly" {{ $viewMode == 'yearly' ? 'selected' : '' }}>Yearly View (Monthly)</option>
+                </select>
+            </div>
+
+            {{-- Filter Bulan (Hanya muncul jika mode bulanan) --}}
+            @if($viewMode == 'monthly')
+            <div class="flex flex-col gap-2 animate-fade-in">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-stone-400">Select Month</label>
+                <select name="month" onchange="this.form.submit()" 
+                        class="bg-white border border-stone-200 text-stone-700 text-xs font-bold py-3 px-5 rounded-2xl outline-none focus:ring-4 focus:ring-maroon/5 shadow-sm cursor-pointer">
+                    @foreach($listMonths as $num => $name)
+                        <option value="{{ $num }}" {{ $selectedMonth == $num ? 'selected' : '' }}>{{ $name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
+            {{-- Filter Tahun --}}
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-stone-400">Select Year</label>
+                <select name="year" onchange="this.form.submit()" 
+                        class="bg-white border border-stone-200 text-stone-700 text-xs font-bold py-3 px-5 rounded-2xl outline-none focus:ring-4 focus:ring-maroon/5 shadow-sm cursor-pointer">
+                    @foreach($availableYears as $y)
+                        <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
+                    @endforeach
+                </select>
+            </div>
         </form>
     </div>
 
+    {{-- 2. STATISTIC CARDS --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <div class="bg-white p-7 rounded-[2.5rem] shadow-sm border border-stone-100 flex items-center gap-5">
             <div class="w-14 h-14 bg-stone-50 rounded-2xl flex items-center justify-center text-stone-600">
@@ -60,12 +95,16 @@
         </div>
     </div>
 
+    {{-- 3. CHARTS SECTION --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        {{-- Line Chart: Sales Trend --}}
         <div class="lg:col-span-2 bg-white p-8 rounded-[2.5rem] shadow-sm border border-stone-100 overflow-hidden">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-xl font-serif font-bold text-stone-900">Monthly Sales Trend</h2>
+                <h2 class="text-xl font-serif font-bold text-stone-900">
+                    {{ $viewMode == 'monthly' ? 'Daily' : 'Monthly' }} Sales Trend
+                </h2>
                 <div class="flex items-center gap-2 text-[10px] font-bold text-stone-400 uppercase">
-                    <span class="w-2 h-2 bg-maroon rounded-full"></span> Completed
+                    <span class="w-2 h-2 bg-maroon rounded-full"></span> Completed Orders
                 </div>
             </div>
             <div class="overflow-x-auto scrollbar-hide">
@@ -73,9 +112,9 @@
                     <canvas id="salesChart"></canvas>
                 </div>
             </div>
-            <p class="text-[9px] text-stone-400 mt-4 text-center italic md:hidden">Scroll the chart to see monthly details</p>
         </div>
 
+        {{-- Doughnut Chart: Order Status --}}
         <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-stone-100">
             <h2 class="text-xl font-serif font-bold text-stone-900 mb-8">Order Status</h2>
             <div class="h-[320px] flex items-center justify-center">
@@ -84,6 +123,7 @@
         </div>
     </div>
 
+    {{-- 4. NAVIGATION CARDS --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <a href="{{ route('admin.products.index') }}" class="group bg-stone-900 p-8 rounded-[2.5rem] shadow-xl hover:bg-black transition-all duration-500 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-2xl group-hover:bg-white/10 transition"></div>
@@ -114,24 +154,30 @@
     </div>
 </div>
 
+{{-- 5. SCRIPTS (CHART.JS) --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Line Chart: Penjualan
+        // Line Chart: Penjualan Dinamis
         const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const gradient = salesCtx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(128, 0, 0, 0.1)');
+        gradient.addColorStop(1, 'rgba(128, 0, 0, 0)');
+
         new Chart(salesCtx, {
             type: 'line',
             data: {
                 labels: @json($chartLabels),
                 datasets: [{
-                    label: 'Pendapatan',
+                    label: 'Revenue',
                     data: @json($chartData),
                     borderColor: '#800000',
-                    backgroundColor: 'rgba(128, 0, 0, 0.05)',
+                    backgroundColor: gradient,
                     borderWidth: 4,
                     fill: true,
                     tension: 0.4,
-                    pointRadius: 5,
+                    pointRadius: 4,
+                    pointHoverRadius: 8,
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#800000',
                     pointBorderWidth: 2
@@ -143,17 +189,11 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        mode: 'index',
-                        intersect: false,
                         backgroundColor: '#1c1917',
-                        titleFont: { family: 'serif', size: 14 },
-                        bodyFont: { size: 12 },
-                        padding: 12,
-                        displayColors: false,
+                        padding: 15,
+                        titleFont: { size: 14, weight: 'bold' },
                         callbacks: {
-                            label: function(context) {
-                                return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                            }
+                            label: (context) => 'Rp ' + context.parsed.y.toLocaleString('id-ID')
                         }
                     }
                 },
@@ -162,20 +202,16 @@
                         beginAtZero: true,
                         grid: { borderDash: [5, 5], color: '#f5f5f4' },
                         ticks: { 
-                            font: { size: 10, weight: 'bold' },
-                            color: '#a8a29e',
-                            callback: value => 'Rp ' + value.toLocaleString('id-ID')
+                            callback: value => 'Rp ' + value.toLocaleString('id-ID'),
+                            font: { size: 10 }
                         }
                     },
-                    x: { 
-                        grid: { display: false },
-                        ticks: { font: { size: 10, weight: 'bold' }, color: '#a8a29e' }
-                    }
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
                 }
             }
         });
 
-        // Doughnut Chart: Status
+        // Doughnut Chart: Status Pesanan
         const orderCtx = document.getElementById('orderStatusChart').getContext('2d');
         new Chart(orderCtx, {
             type: 'doughnut',
@@ -184,7 +220,7 @@
                 datasets: [{
                     data: [{{ $pendingOrders }}, {{ $totalOrders - $pendingOrders }}],
                     backgroundColor: ['#fbbf24', '#800000'],
-                    borderWidth: 8,
+                    borderWidth: 5,
                     borderColor: '#fff',
                     hoverOffset: 15
                 }]
@@ -192,21 +228,24 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '75%',
+                cutout: '70%',
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { usePointStyle: true, padding: 30, font: { size: 12, weight: 'bold' }, color: '#444' }
+                        labels: { usePointStyle: true, padding: 25, font: { weight: 'bold' } }
                     }
                 }
             }
         });
+
+        lucide.createIcons();
     });
 </script>
 
 <style>
-    /* Menyembunyikan scrollbar tapi tetap bisa di-scroll */
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 @endsection

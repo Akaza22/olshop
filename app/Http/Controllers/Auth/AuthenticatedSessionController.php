@@ -25,14 +25,10 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-         if (auth()->user()->is_admin) {
-        return redirect()->intended('/admin');
-        }
-        
-        return redirect()->intended('/katalog');
+        // Add ->with('success', '...') to trigger the global toast
+        return redirect()->intended('/katalog')->with('success', 'Welcome back to your locker!');
     }
 
     /**
@@ -43,9 +39,10 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // Add the flash message and redirect to login
+        return redirect()->route('login')
+                        ->with('success', 'You have been logged out. See you soon!');
     }
 }

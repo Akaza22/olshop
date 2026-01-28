@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-6xl mx-auto py-12 px-4">
     
-    {{-- Header & Navigation --}}
+    {{-- 1. HEADER & NAVIGATION --}}
     <div class="flex items-center gap-5 mb-10">
         <a href="{{ route('admin.products.index') }}" 
            class="group flex items-center justify-center w-12 h-12 bg-white border border-stone-200 rounded-2xl shadow-sm hover:bg-stone-50 transition-all duration-300">
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    {{-- Error Handling --}}
+    {{-- 2. ERROR HANDLING --}}
     @if ($errors->any())
         <div class="mb-8 p-5 bg-red-50 border-l-4 border-red-500 rounded-2xl shadow-sm">
             <div class="flex items-center gap-3 mb-2">
@@ -30,7 +30,7 @@
         </div>
     @endif
 
-    {{-- Form Start --}}
+    {{-- 3. PRODUCT FORM --}}
     <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         @csrf
         
@@ -46,7 +46,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Product Name</label>
-                            <input type="text" name="name" value="{{ old('name') }}" placeholder="Contoh: Vintage Harrington Jacket" required 
+                            <input type="text" name="name" value="{{ old('name') }}" placeholder="e.g., Vintage Harrington Jacket" required 
                                    class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800">
                         </div>
                         <div class="space-y-2">
@@ -59,11 +59,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Condition</label>
-                            <input type="text" name="condition" value="{{ old('condition') }}" placeholder="Contoh: Excellent / 9.5/10" 
+                            <input type="text" name="condition" value="{{ old('condition') }}" placeholder="e.g., Excellent / 9.5 out of 10" 
                                    class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800">
                         </div>
 
-                        {{-- SEKSI KATEGORI BARU --}}
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Category</label>
                             <div class="relative">
@@ -83,7 +82,7 @@
 
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold uppercase tracking-widest text-stone-400 ml-1">Detail Description</label>
-                        <textarea name="description" rows="5" placeholder="Write specifications, size details, or any flaws..." 
+                        <textarea name="description" rows="5" placeholder="Write specifications, measurements, or any minor flaws..." 
                                   class="w-full bg-stone-50 border border-stone-200 rounded-2xl py-4 px-5 focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all outline-none text-stone-800 resize-none">{{ old('description') }}</textarea>
                     </div>
                 </div>
@@ -91,12 +90,12 @@
                 {{-- Stock Size --}}
                 <div class="pt-6 border-t border-stone-50">
                     <h2 class="text-lg font-serif font-bold text-stone-800 mb-6 flex items-center gap-2">
-                        <i data-lucide="box" class="w-5 h-5 text-maroon"></i> Stock Size
+                        <i data-lucide="box" class="w-5 h-5 text-maroon"></i> Inventory Stock
                     </h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         @foreach(['S', 'M', 'L', 'XL'] as $sz)
                         <div class="bg-stone-50 border border-stone-200 p-5 rounded-2xl text-center hover:border-maroon/30 transition-colors group">
-                            <span class="block text-xs font-black mb-3 text-stone-400 group-hover:text-maroon transition-colors">{{ $sz }}</span>
+                            <span class="block text-xs font-black mb-3 text-stone-400 group-hover:text-maroon transition-colors uppercase">{{ $sz }}</span>
                             <input type="number" name="sizes[{{ $sz }}]" value="{{ old('sizes.'.$sz, 0) }}" min="0" 
                                    class="w-full bg-white border border-stone-200 rounded-xl py-2 px-2 text-center font-bold text-stone-800 outline-none focus:border-maroon shadow-sm">
                         </div>
@@ -106,7 +105,7 @@
             </div>
         </div>
 
-        {{-- Sidebar Photo Upload --}}
+        {{-- 4. SIDEBAR MEDIA UPLOAD --}}
         <div class="space-y-6">
             
             {{-- Main Catalog Photo --}}
@@ -121,7 +120,7 @@
                             <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-3">
                                 <i data-lucide="image-plus" class="w-6 h-6 text-stone-300"></i>
                             </div>
-                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Choose Photo</p>
+                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Choose Image</p>
                         </div>
                         <input type="file" name="image" id="main-image-input" required 
                                class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*">
@@ -152,15 +151,30 @@
             {{-- Submit Button --}}
             <button type="submit" class="w-full bg-maroon text-white py-6 rounded-[2rem] font-bold hover:bg-red-900 transition-all shadow-xl shadow-maroon/20 flex items-center justify-center gap-3 group">
                 <i data-lucide="save" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
-                <span class="uppercase tracking-widest text-xs">Save Collection</span>
+                <span class="uppercase tracking-widest text-xs">Publish Collection</span>
             </button>
         </div>
     </form>
 </div>
 
-{{-- Preview Scripts --}}
+{{-- 5. MODERN TOAST NOTIFICATION --}}
+@if(session('success'))
+<div id="admin-toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 animate-toast">
+    <div class="bg-stone-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-white/10">
+        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white">
+            <i data-lucide="check" class="w-4 h-4"></i>
+        </div>
+        <div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-green-400">Action Successful</p>
+            <p class="text-xs text-stone-300">{{ session('success') }}</p>
+        </div>
+    </div>
+</div>
+@endif
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Image Preview Logic
         function setupPreview(inputId, previewId, placeholderId) {
             const input = document.getElementById(inputId);
             const preview = document.getElementById(previewId);
@@ -183,9 +197,30 @@
         setupPreview('main-image-input', 'main-preview', 'main-placeholder');
         setupPreview('tryon-image-input', 'tryon-preview', 'tryon-placeholder');
         
+        // Auto-hide Toast Logic
+        const toast = document.getElementById('admin-toast');
+        if (toast) {
+            setTimeout(() => {
+                toast.style.transition = 'all 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
     });
 </script>
+
+<style>
+    @keyframes slideUp {
+        from { transform: translate(-50%, 20px); opacity: 0; }
+        to { transform: translate(-50%, 0); opacity: 1; }
+    }
+    .animate-toast {
+        animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+</style>
 @endsection

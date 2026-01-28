@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\ProductSize;
+use App\Models\ProductSize; // Konsisten menggunakan ProductSize sesuai tabel product_sizes
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -23,49 +24,80 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
-        $product = Product::findOrFail($request->product_id);
-        $size = ProductSize::findOrFail($request->size_id);
-        
-        // Ambil quantity dari input, default 1 jika tidak ada
-        $quantity = $request->input('quantity', 1);
+        // 1. Validasi input dasar menggunakan tabel product_sizes
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'size_id' => 'required|exists:product_sizes,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
 
-        // Validasi tambahan: Pastikan quantity tidak melebihi stok asli di DB
-        if ($quantity > $size->stock) {
-            return redirect()->back()->with('error', 'The quantity exceeds the available stock!');
+        $product = Product::findOrFail($request->product_id);
+        $size = ProductSize::findOrFail($request->size_id); // Gunakan ProductSize
+        
+        // 2. Ambil keranjang dari session
+        $cart = session()->get('cart', []);
+        $cartKey = $request->product_id . '-' . $request->size_id;
+
+        // 3. Hitung total: yang sudah di cart + yang baru mau ditambah
+        $existingQty = isset($cart[$cartKey]) ? $cart[$cartKey]['quantity'] : 0;
+        $totalRequestedQty = $existingQty + $request->quantity;
+
+        // 4. CEK STOK: Jika melebihi stok di tabel product_sizes, kirim error
+        if ($totalRequestedQty > $size->stock) {
+            return response()->json([
+                'success' => false,
+                'message' => "Stock limit reached. You already have {$existingQty} in your bag. Only " . ($size->stock - $existingQty) . " more available."
+            ], 422);
         }
 
-        $cart = session()->get('cart', []);
-        $cartId = $product->id . '-' . $size->id;
-
-        if(isset($cart[$cartId])) {
-            // Jika barang sudah ada, tambahkan jumlahnya
-            $cart[$cartId]['quantity'] += $quantity;
+        // 5. Jika aman, update session
+        if(isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity'] = $totalRequestedQty;
         } else {
-            $cart[$cartId] = [
-                "product_id" => $product->id,
+            $cart[$cartKey] = [
+                "product_id" => $product->id, // PENTING: Harus ada untuk storeCheckout
                 "name" => $product->name,
-                "quantity" => $quantity,
+                "quantity" => $request->quantity,
                 "price" => $product->price,
                 "image" => $product->image,
-                "size" => $size->size
+                "size" => $size->size,
+                "size_id" => $size->id
             ];
         }
 
         session()->put('cart', $cart);
-        return redirect()->route('cart.index')->with('success', 'Successfully added!');
+
+        return response()->json([
+            'success' => true,
+            'cart_count' => count($cart),
+            'message' => 'Product successfully added to bag!'
+        ]);
     }
 
-    public function remove($id)
+    public function remove(Request $request, $id)
     {
         $cart = session()->get('cart');
         if(isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
         }
-        return redirect()->back()->with('success', 'Product removed!');
+
+        $newTotal = 0;
+        foreach((session('cart') ?? []) as $item) {
+            $newTotal += $item['price'] * $item['quantity'];
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'cart_count' => count(session('cart') ?? []),
+                'new_total' => number_format($newTotal, 0, ',', '.')
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Product removed from bag.');
     }
 
-    // Tampilkan Form Checkout
     public function checkout() {
         $cart = session()->get('cart', []);
         if(count($cart) == 0) return redirect('/katalog');
@@ -76,15 +108,14 @@ class CartController extends Controller
         return view('checkout', compact('cart', 'total'));
     }
 
-    // Proses Simpan Pesanan
     public function storeCheckout(Request $request) {
         $cart = session()->get('cart');
+        if (!$cart) return redirect('/katalog');
 
-        // Gunakan Transaction agar jika ada error di tengah, database tetap aman
         DB::transaction(function () use ($request, $cart) {
             // 1. Simpan ke tabel Orders
             $order = Order::create([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'name' => $request->name,
                 'contact' => $request->contact,
                 'address' => $request->address,
@@ -93,15 +124,16 @@ class CartController extends Controller
             ]);
 
             foreach ($cart as $id => $details) {
-                // 2. Simpan detail barang ke OrderItems
+                // 2. Simpan detail ke OrderItems
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $details['product_id'],
                     'size' => $details['size'],
                     'price' => $details['price'],
+                    'quantity' => $details['quantity'], // Jangan lupa quantity di OrderItem
                 ]);
 
-                // 3. KURANGI STOK secara otomatis
+                // 3. Kurangi Stok di tabel product_sizes
                 $productSize = ProductSize::where('product_id', $details['product_id'])
                                         ->where('size', $details['size'])
                                         ->first();
@@ -111,18 +143,14 @@ class CartController extends Controller
             }
         });
 
-        // 4. KOSONGKAN KERANJANG
         session()->forget('cart');
-
-        return redirect('/orders')->with('success', 'Your order has been successfully sent!');
+        return redirect('/orders')->with('success', 'Checkout successful! Your order is being processed.');
     }
 
-    // Menampilkan Riwayat Pesanan User
     public function orderHistory()
     {
-        // Mengambil pesanan milik user login, diurutkan dari yang terbaru
         $orders = Order::with('items.product')
-                        ->where('user_id', auth()->id())
+                        ->where('user_id', Auth::id())
                         ->orderBy('created_at', 'desc')
                         ->get();
 

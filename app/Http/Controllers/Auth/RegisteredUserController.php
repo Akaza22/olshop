@@ -32,7 +32,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
         $user = User::create([
@@ -46,6 +46,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect('/katalog');
+        // Add the ->with('success', '...') part to trigger the toast!
+        return redirect('/katalog')->with('success', 'Account created! Welcome to LockerByBrokeAngel.');
     }
 }

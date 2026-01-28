@@ -16,6 +16,7 @@
         .text-maroon { color: #800000; }
         .border-maroon { border-color: #800000; }
         .text-brown { color: #5D4037; }
+        [v-cloak] { display: none; }
     </style>
 </head>
 <body class="bg-cream text-gray-800 flex flex-col min-h-screen">
@@ -46,7 +47,6 @@
                     class="{{ request()->routeIs('about') ? 'text-maroon font-bold' : 'text-gray-600' }} hover:text-maroon transition">
                     About 
                 </a>
-               {{-- Dashboard Admin --}}
                 @auth
                     @if(auth()->user()->role == 'admin')
                         <a href="{{ route('admin.dashboard') }}" 
@@ -74,11 +74,10 @@
                 <a href="/cart" class="relative text-gray-600 hover:text-maroon transition">
                     <i data-lucide="shopping-bag" class="w-6 h-6"></i>
                     
-                    @if(session('cart') && count(session('cart')) > 0)
-                        <span class="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full animate-bounce">
-                            {{ count(session('cart')) }}
-                        </span>
-                    @endif
+                    {{-- PERBAIKAN: Menambahkan ID 'cart-badge' dan class hidden jika 0 --}}
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full animate-bounce {{ (!session('cart') || count(session('cart')) == 0) ? 'hidden' : '' }}">
+                        {{ session('cart') ? count(session('cart')) : 0 }}
+                    </span>
                 </a>
 
                 @auth
@@ -87,9 +86,10 @@
                             {{ Auth::user()->name }}
                         </span>
 
-                        <form method="POST" action="/logout">
+                        <form method="POST" action="/logout" class="flex items-center">
                             @csrf
-                            <button class="text-red-600 text-sm font-bold hover:underline">
+                            <button class="text-red-600 text-sm font-bold hover:text-red-800 transition flex items-center gap-2 group">
+                                <i data-lucide="log-out" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                                 Logout
                             </button>
                         </form>
@@ -150,10 +150,57 @@
         <div class="max-w-7xl mx-auto px-6 pt-8 text-center text-xs text-stone-500">
             <p>&copy; 2026 LockerByBrokeAngel Project. All rights reserved.</p>
         </div>
+        {{-- GLOBAL TOAST NOTIFICATION --}}
+        <div id="global-toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] transition-all duration-500 opacity-0 translate-y-20 pointer-events-none">
+            <div class="bg-stone-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-white/10">
+                <div id="global-toast-icon-bg" class="w-8 h-8 rounded-full flex items-center justify-center text-white">
+                    <i id="global-toast-icon" data-lucide="check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <p id="global-toast-title" class="text-[10px] font-black uppercase tracking-widest text-green-400">Success</p>
+                    <p id="global-toast-message" class="text-xs text-stone-300"></p>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script>
         lucide.createIcons();
+
+            function showGlobalToast(message, type = 'success') {
+            const toast = document.getElementById('global-toast');
+            const title = document.getElementById('global-toast-title');
+            const msg = document.getElementById('global-toast-message');
+            const iconBg = document.getElementById('global-toast-icon-bg');
+            
+            msg.innerText = message;
+            
+            if(type === 'success') {
+                iconBg.className = "w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white";
+                title.className = "text-[10px] font-black uppercase tracking-widest text-green-400";
+                title.innerText = "Success";
+            } else {
+                iconBg.className = "w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white";
+                title.className = "text-[10px] font-black uppercase tracking-widest text-red-400";
+                title.innerText = "Error";
+            }
+
+            toast.classList.remove('opacity-0', 'translate-y-20');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-20');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 4000);
+        }
+
+        @if(session('success'))
+            showGlobalToast("{{ session('success') }}", 'success');
+        @endif
+
+        @if(session('error') || $errors->any())
+            showGlobalToast("{{ session('error') ?? $errors->first() }}", 'error');
+        @endif
     </script>
 </body>
 </html>

@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'customer',
         ]);
 
-        // 3. Seed Products (Hanya 4 Produk sesuai ketersediaan file kamu)
+        // 3. Seed Products
         $productData = [
             [
                 'name' => 'Coquette Pinkish',
@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Tops',
                 'price' => 95000,
                 'img' => 'TOP 2.png',
-                'tryon' => 'TOP 2.png', // Karena hanya ada png
+                'tryon' => 'TOP 2.png',
                 'desc' => 'Graphic tank top featuring City of London print, edgy and stylish.'
             ],
             [
@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Tops',
                 'price' => 85000,
                 'img' => 'TOP 3.jpg',
-                'tryon' => 'TOP 3.png', // Ada file transparan png
+                'tryon' => 'TOP 3.png',
                 'desc' => 'Soft pink tank top with ribbon accents, perfect for daily wear.'
             ],
             [
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Tops',
                 'price' => 85000,
                 'img' => 'TOP 4.jpg',
-                'tryon' => 'TOP 4.png', // Ada file transparan png
+                'tryon' => 'TOP 4.png',
                 'desc' => 'Vibrant aqua blue top with white lace trim and coquette aesthetic.'
             ],
         ];
@@ -87,17 +87,15 @@ class DatabaseSeeder extends Seeder
                 'tryon_image' => $data['tryon'],
             ]);
 
-            // Seed Stok Ukuran
-            foreach (['S', 'M', 'L', 'XL'] as $size) {
-                ProductSize::create([
-                    'product_id' => $product->id,
-                    'size' => $size,
-                    'stock' => rand(5, 15),
-                ]);
-            }
+            // SEAKARANG HANYA SEED UKURAN S DENGAN STOK 1
+            ProductSize::create([
+                'product_id' => $product->id,
+                'size'       => 'S',
+                'stock'      => 1,
+            ]);
         }
 
-        // 4. Seed Orders (Simulasi transaksi untuk Dashboard)
+        // 4. Seed Orders (Simulasi transaksi)
         $transactions = [
             ['month' => -1, 'status' => 'Sent', 'total' => 170000],
             ['month' => 0,  'status' => 'Sent', 'total' => 85000],
@@ -121,7 +119,7 @@ class DatabaseSeeder extends Seeder
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => rand(1, 4),
-                'size' => 'M',
+                'size' => 'S', // Disesuaikan karena hanya ada ukuran S
                 'price' => $t['total']
             ]);
         }

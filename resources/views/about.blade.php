@@ -10,7 +10,7 @@
                     Redefining <br> <span class="italic text-maroon">Luxury Thrifting.</span>
                 </h1>
                 <p class="text-lg text-stone-600 leading-relaxed mb-10">
-                    Thrift VTO was born from a vision to combine the uniqueness of vintage clothing with future technology. We believe that personal style shouldn't harm the planet, and the convenience of shopping shouldn't lose its sense of precision.
+                    LockerByBrokeAngel was born from a vision to combine the uniqueness of vintage clothing with future technology. We believe that personal style shouldn't harm the planet, and the convenience of shopping shouldn't lose its sense of precision.
                 </p>
             </div>
         </div>

@@ -24,10 +24,12 @@ class LoginRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            // Changed from 'email' to 'login' to match our blade input
+            'login' => ['required', 'string'], 
             'password' => ['required', 'string'],
         ];
     }
@@ -41,11 +43,15 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // Determine if the input is an email or a username
+        $fieldType = filter_var($this->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        // Attempt login using the dynamic field type
+        if (! Auth::attempt([$fieldType => $this->login, 'password' => $this->password], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'login' => trans('auth.failed'),
             ]);
         }
 
